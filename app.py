@@ -39,8 +39,6 @@ with st.sidebar:
     )
 
 if page == "Home":
-    
-
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.image("img.jpeg", width=600, caption="RAG with LLM", use_column_width=True)  # Replace with a valid image URL
@@ -48,28 +46,49 @@ if page == "Home":
     st.success("Retrieval-Augmented Generation (RAG) with Llama3")
     st.write("Welcome to the RAG with Llama3 application. Select 'Generate Response' from the menu to get started.")
 elif page == "Generate Response":
-    st.subheader("Generate a Response")
-    query = st.text_area("Enter your query:", height=200)  # Textarea for user input
+    st.subheader("Chat with LlamaGPT")
 
-    if st.button("Generate"):
-        with st.spinner("Generating response..."):
-            # Perform a semantic search
-            docs = db.similarity_search_with_score(query=query, k=5)
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Hello! How can I assist you today?"}
+        ]
 
-            # Prepare the context for the Llama3 model
-            context = "\n".join([doc.page_content for doc, score in docs])
+    # Display all messages
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-            # Generate a response using Llama3
-            response = ollama.chat(model='llama3', messages=[
-                {
-                    'role': 'user',
-                    'content': f"Using the following context, write about{query}:\n{context}",
-                },
-            ])
+    # Chat input
+    if prompt := st.chat_input("Say something"):
+        # Add user message to session state
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
-            # Display the response from Llama3
-            st.success("Response generated!")
-            st.write(response['message']['content'])
+        with st.chat_message("assistant"):
+            message_placeholder = st.empty()
+            full_response = ""
+            with st.spinner("Generating response..."):
+                # Perform a semantic search
+                docs = db.similarity_search_with_score(query=prompt, k=5)
+
+                # Prepare the context for the Llama3 model
+                context = "\n".join([doc.page_content for doc, score in docs])
+
+                # Generate a response using Llama3
+                response = ollama.chat(model='llama3', messages=[
+                    {
+                        'role': 'user',
+                        'content': f"Using the following context, write about {prompt}:\n{context}",
+                    },
+                ])
+
+                # Build full response
+                full_response += response['message']['content']
+                message_placeholder.markdown(full_response + "▌")
+            message_placeholder.markdown(full_response)
+        
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
 
 elif page == "Contact Us":
     st.markdown("***")
