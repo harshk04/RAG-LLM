@@ -1,7 +1,7 @@
 import streamlit as st
 from streamlit_option_menu import option_menu  # Make sure to install this package
-from langchain.vectorstores import Qdrant
-from langchain.embeddings import HuggingFaceBgeEmbeddings
+from langchain_qdrant import Qdrant
+from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from qdrant_client import QdrantClient
 import ollama
 
