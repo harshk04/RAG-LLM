@@ -35,8 +35,8 @@ Welcome to the LlamaGPT Contextual Search Engine! This project demonstrates the 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/llama-gpt-contextual-search.git
-   cd llama-gpt-contextual-search
+   git clone https://github.com/harshk04/RAG-LLM
+   cd RAG-LLM
 
 2. Install the required packages:
    
