@@ -1,0 +1,16 @@
+langchain
+qdrant-client
+huggingface-hub
+torch
+langchain_community
+PyPDF2
+langchain-qdrant
+pypdf
+streamlit
+streamlit-option-menu
+langchain
+qdrant-client
+huggingface-hub
+torch
+ollama
+
